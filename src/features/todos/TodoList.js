@@ -2,7 +2,12 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faUpload } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
-import { useGetTodosQuery, useAddTodoMutation } from '../api/apiSlice';
+import {
+  useGetTodosQuery,
+  useAddTodoMutation,
+  useUpdateTodoMutation,
+  useDeleteTodoMutation
+} from '../api/apiSlice';
 
 const TodoList = () => {
   const [newTodo, setNewTodo] = useState('');
@@ -19,6 +24,8 @@ const TodoList = () => {
   } = useGetTodosQuery();
 
   const [addTodo] = useAddTodoMutation();
+  const [updateTodo] = useUpdateTodoMutation();
+  const [deleteTodo] = useDeleteTodoMutation();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -55,10 +62,17 @@ const TodoList = () => {
       return (
         <article key={todo.id}>
           <div className='todo'>
-            <input type='checkbox' id={todo.id} />
+            <input
+              type='checkbox'
+              id={todo.id}
+              checked={todo.completed}
+              onChange={() =>
+                updateTodo({ ...todo, completed: !todo.completed })
+              }
+            />
             <label htmlFor={todo.id}>{todo.title}</label>
           </div>
-          <button className='trash'>
+          <button className='trash' onClick={() => deleteTodo({ id: todo.id })}>
             <FontAwesomeIcon icon={faTrash} />
           </button>
         </article>
